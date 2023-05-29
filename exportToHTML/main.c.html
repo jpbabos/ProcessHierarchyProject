@@ -1,0 +1,207 @@
+<html>
+<head>
+<title>main.c</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bbb529;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+.s4 { color: #6897bb;}
+.s5 { color: #cc7832;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+main.c</font>
+</center></td></tr></table>
+<pre><span class="s0">#include </span><span class="s2">&lt;stdio.h&gt;</span>
+<span class="s0">#include </span><span class="s2">&lt;stdlib.h&gt;</span>
+
+
+<span class="s3">/*constants and structures*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s0">#define </span><span class="s1">MAX_PROCESSES </span><span class="s4">5</span>
+
+<span class="s5">struct </span><span class="s1">node1{</span>
+    <span class="s5">int </span><span class="s1">id</span><span class="s5">;</span>
+    <span class="s5">struct </span><span class="s1">node1* link</span><span class="s5">;</span>
+<span class="s1">}</span><span class="s5">;</span>
+
+<span class="s5">typedef struct </span><span class="s1">node1 linked_list_type</span><span class="s5">;</span>
+
+<span class="s5">struct </span><span class="s1">node2{</span>
+    <span class="s5">int </span><span class="s1">parent</span><span class="s5">;</span>
+    <span class="s1">linked_list_type* children</span><span class="s5">;</span>
+<span class="s1">}</span><span class="s5">;</span>
+
+<span class="s5">typedef struct </span><span class="s1">node2 pcb_type</span><span class="s5">;</span>
+
+<span class="s1">pcb_type* pcb_array[MAX_PROCESSES]</span><span class="s5">;</span>
+<span class="s3">/******************************************************************************************/</span>
+
+
+<span class="s3">/*Procedure to print hierarchy process*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s5">void </span><span class="s1">display_process(){</span>
+    <span class="s1">linked_list_type* current_child</span><span class="s5">;</span>
+
+    <span class="s5">for</span><span class="s1">(</span><span class="s5">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s5">; </span><span class="s1">i &lt; MAX_PROCESSES</span><span class="s5">; </span><span class="s1">i++){ </span><span class="s3">//goes through each process and prints its attributes, and if the process has children, it goes down that line as well</span>
+        <span class="s5">if</span><span class="s1">(pcb_array[i] != NULL){</span>
+            <span class="s1">printf(</span><span class="s2">&quot;Process id: %d</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s5">, </span><span class="s1">i)</span><span class="s5">;</span>
+            <span class="s1">printf(</span><span class="s2">&quot;</span><span class="s5">\t</span><span class="s2">Parent process: %d</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s5">, </span><span class="s1">pcb_array[i]-&gt;parent)</span><span class="s5">;</span>
+            <span class="s1">current_child = pcb_array[i]-&gt;children</span><span class="s5">;</span>
+            <span class="s5">while</span><span class="s1">(current_child != NULL){</span>
+                <span class="s1">printf(</span><span class="s2">&quot;</span><span class="s5">\t</span><span class="s2">Child process: %d</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s5">, </span><span class="s1">current_child-&gt;id)</span><span class="s5">;</span>
+                <span class="s1">current_child = current_child-&gt;link</span><span class="s5">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+<span class="s3">/******************************************************************************************/</span>
+
+
+<span class="s3">/*Option one*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s5">void </span><span class="s1">initialize_process(){</span>
+    <span class="s5">int </span><span class="s1">i</span><span class="s5">;</span>
+    <span class="s1">pcb_array[</span><span class="s4">0</span><span class="s1">] = (pcb_type *) malloc(</span><span class="s5">sizeof </span><span class="s1">(pcb_type))</span><span class="s5">; </span><span class="s3">//allocate memory for pcb a [0]</span>
+    <span class="s1">pcb_array[</span><span class="s4">0</span><span class="s1">]-&gt;parent = </span><span class="s4">0</span><span class="s5">;</span>
+    <span class="s1">pcb_array[</span><span class="s4">0</span><span class="s1">]-&gt;children = NULL</span><span class="s5">;</span>
+    <span class="s5">for </span><span class="s1">(i = </span><span class="s4">1</span><span class="s5">; </span><span class="s1">i &lt; MAX_PROCESSES</span><span class="s5">; </span><span class="s1">i++){ </span><span class="s3">//sets all other pcbs to null</span>
+        <span class="s1">pcb_array[i] = NULL</span><span class="s5">;</span>
+    <span class="s1">}</span>
+    <span class="s1">display_process()</span><span class="s5">;</span>
+<span class="s1">}</span>
+<span class="s3">/******************************************************************************************/</span>
+
+<span class="s3">/*Option two*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s5">void </span><span class="s1">create_new_child(){</span>
+    <span class="s5">int </span><span class="s1">p</span><span class="s5">, </span><span class="s1">q = </span><span class="s4">1</span><span class="s5">;</span>
+    <span class="s1">linked_list_type* new_child_node</span><span class="s5">; </span>
+    <span class="s1">linked_list_type* current_child</span><span class="s5">;</span>
+
+    <span class="s1">printf(</span><span class="s2">&quot;Enter parent process id:  &quot;</span><span class="s1">)</span><span class="s5">;</span>
+    <span class="s1">scanf(</span><span class="s2">&quot;%d&quot;</span><span class="s5">, </span><span class="s1">&amp;p)</span><span class="s5">;</span>
+
+    <span class="s5">if</span><span class="s1">(pcb_array[p] == NULL){</span>
+        <span class="s1">printf(</span><span class="s2">&quot;Process does not exist</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s5">return;</span>
+    <span class="s1">}</span>
+
+    <span class="s5">while</span><span class="s1">((q &lt; MAX_PROCESSES) &amp;&amp; (pcb_array[q] != NULL)){</span>
+        <span class="s1">q++</span><span class="s5">;</span>
+    <span class="s1">}</span>
+    <span class="s5">if</span><span class="s1">(q == MAX_PROCESSES){</span>
+        <span class="s1">printf(</span><span class="s2">&quot;No more available PCBs&quot;</span><span class="s1">)</span><span class="s5">;</span>
+    <span class="s1">}</span>
+    <span class="s1">pcb_array[q] = (pcb_type *) malloc(</span><span class="s5">sizeof </span><span class="s1">(pcb_type))</span><span class="s5">; </span>
+    <span class="s1">new_child_node = (linked_list_type *) malloc(</span><span class="s5">sizeof </span><span class="s1">(linked_list_type))</span><span class="s5">; </span><span class="s3">//creates memory for new child</span>
+    <span class="s1">pcb_array[q]-&gt;parent = p</span><span class="s5">; </span><span class="s3">//records the parent's index at p in pcb[q]</span>
+    <span class="s1">pcb_array[q]-&gt;children = NULL</span><span class="s5">;</span>
+
+    <span class="s1">new_child_node-&gt;id = q</span><span class="s5">;</span>
+    <span class="s1">new_child_node-&gt;link = NULL</span><span class="s5">;</span>
+
+    <span class="s5">if</span><span class="s1">(pcb_array[p]-&gt;children == NULL){ </span><span class="s3">//if the parent does not have any other children</span>
+        <span class="s1">pcb_array[p]-&gt;children = new_child_node</span><span class="s5">;</span>
+        <span class="s1">display_process()</span><span class="s5">;</span>
+        <span class="s5">return;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">current_child = pcb_array[p]-&gt;children</span><span class="s5">; </span><span class="s3">//finds the last child and creates a link from that to the new child</span>
+    <span class="s5">while</span><span class="s1">(current_child-&gt;link != NULL){</span>
+        <span class="s1">current_child = current_child-&gt;link</span><span class="s5">;</span>
+    <span class="s1">}</span>
+    <span class="s1">current_child-&gt;link = new_child_node</span><span class="s5">;</span>
+
+    <span class="s1">display_process()</span><span class="s5">;</span>
+<span class="s1">}</span>
+<span class="s3">/******************************************************************************************/</span>
+
+
+<span class="s3">/*Recursive procedure to delete children processes*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s5">void </span><span class="s1">destroy_children(linked_list_type* node){</span>
+    <span class="s5">int </span><span class="s1">q</span><span class="s5">;</span>
+
+    <span class="s5">if</span><span class="s1">(node == NULL){</span>
+        <span class="s5">return;</span>
+    <span class="s1">}</span>
+    <span class="s1">destroy_children(node-&gt;link)</span><span class="s5">; </span><span class="s3">//goes through each child and deletes it and frees up the memory</span>
+    <span class="s1">q = node-&gt;id</span><span class="s5">;</span>
+    <span class="s1">destroy_children(pcb_array[q]-&gt;children)</span><span class="s5">;</span>
+
+    <span class="s1">free(pcb_array[q])</span><span class="s5">;</span>
+    <span class="s1">pcb_array[q] = NULL</span><span class="s5">;</span>
+    <span class="s1">free(node)</span><span class="s5">;</span>
+    <span class="s1">node = NULL</span><span class="s5">;</span>
+<span class="s1">}</span>
+<span class="s3">/******************************************************************************************/</span>
+
+
+<span class="s3">/*Option three*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s5">void </span><span class="s1">destroy_children_of_parent_process(){</span>
+    <span class="s5">int </span><span class="s1">p</span><span class="s5">;</span>
+
+    <span class="s1">printf(</span><span class="s2">&quot;Enter the parent process whose descendents are to be destroyed:&quot;</span><span class="s1">)</span><span class="s5">;</span>
+    <span class="s1">scanf(</span><span class="s2">&quot;%d&quot;</span><span class="s5">, </span><span class="s1">&amp;p)</span><span class="s5">;</span>
+    <span class="s1">destroy_children(pcb_array[p]-&gt;children)</span><span class="s5">;</span>
+    <span class="s1">pcb_array[p]-&gt;children = NULL</span><span class="s5">;</span>
+
+    <span class="s1">display_process()</span><span class="s5">;</span>
+<span class="s1">}</span>
+<span class="s3">/******************************************************************************************/</span>
+
+
+<span class="s3">/*Option 4*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s5">void </span><span class="s1">quit(){</span>
+    <span class="s5">for</span><span class="s1">(</span><span class="s5">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s5">; </span><span class="s1">i &lt; MAX_PROCESSES</span><span class="s5">; </span><span class="s1">i++){</span>
+        <span class="s5">if</span><span class="s1">(pcb_array[i] != NULL){</span>
+            <span class="s5">if</span><span class="s1">(pcb_array[i]-&gt;children != NULL){</span>
+                <span class="s1">destroy_children(pcb_array[i]-&gt;children)</span><span class="s5">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+<span class="s3">/******************************************************************************************/</span>
+
+
+<span class="s3">/*Main method*/</span>
+<span class="s3">/******************************************************************************************/</span>
+<span class="s5">int </span><span class="s1">main(){</span>
+    <span class="s5">int </span><span class="s1">choice = </span><span class="s4">0</span><span class="s5">;</span>
+
+    <span class="s5">while</span><span class="s1">(choice != </span><span class="s4">4</span><span class="s1">){</span>
+        <span class="s1">printf(</span><span class="s2">&quot;*********************************************************</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">printf(</span><span class="s2">&quot;Welcome to Process Creation Hierarchy!</span><span class="s5">\n\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">printf(</span><span class="s2">&quot;Please choose one of the options below:</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">printf(</span><span class="s2">&quot;1. Initialize process hierarchy</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">printf(</span><span class="s2">&quot;2. Create a new child process</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">printf(</span><span class="s2">&quot;3. Destroy all descendants of a parent process</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">printf(</span><span class="s2">&quot;4. Quit</span><span class="s5">\n</span><span class="s2">&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">printf(</span><span class="s2">&quot;Selection:&quot;</span><span class="s1">)</span><span class="s5">;</span>
+        <span class="s1">scanf(</span><span class="s2">&quot;%d&quot;</span><span class="s5">, </span><span class="s1">&amp;choice)</span><span class="s5">;</span>
+        <span class="s5">switch</span><span class="s1">(choice){</span>
+            <span class="s5">case </span><span class="s4">1</span><span class="s1">:</span>
+                <span class="s1">initialize_process()</span><span class="s5">;</span>
+                <span class="s5">break;</span>
+            <span class="s5">case </span><span class="s4">2</span><span class="s1">:</span>
+                <span class="s1">create_new_child()</span><span class="s5">;</span>
+                <span class="s5">break;</span>
+            <span class="s5">case </span><span class="s4">3</span><span class="s1">:</span>
+                <span class="s1">destroy_children_of_parent_process()</span><span class="s5">;</span>
+                <span class="s5">break;</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+    <span class="s1">quit()</span><span class="s5">;</span>
+    <span class="s1">printf(</span><span class="s2">&quot;Have a great day!&quot;</span><span class="s1">)</span><span class="s5">;</span>
+<span class="s1">}</span>
+<span class="s3">/******************************************************************************************/</span></pre>
+</body>
+</html>
